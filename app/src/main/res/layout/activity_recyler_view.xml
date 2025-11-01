@@ -14,8 +14,8 @@
 
         <SearchView
             android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="79dp"
+            android:layout_width="425dp"
+            android:layout_height="103dp"
             android:queryHint="Search here..." />
 
         <androidx.recyclerview.widget.RecyclerView
