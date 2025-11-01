@@ -211,8 +211,9 @@ public class DB_Manager extends SQLiteOpenHelper {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream); // Or JPEG, WEBP
         return stream.toByteArray();
     }
+    }
 
-}
+
 
 
 

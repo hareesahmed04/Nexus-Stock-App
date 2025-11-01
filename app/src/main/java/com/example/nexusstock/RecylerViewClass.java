@@ -2,30 +2,26 @@ package com.example.nexusstock;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class RecylerViewClass extends AppCompatActivity {
-  RecyclerView recyclerView;
-  ArrayList <String> id, name, category, size, quantity, price,productImage;
-    ArrayList <String> img_uri;
+    RecyclerView recyclerView;
+    ArrayList<String> id, name, category, size, quantity, price, productImage;
+    ArrayList<String> img_uri;
     ImageView noItemFound;
-   DB_Manager DB;
-  CustomAdapter ad;
+    DB_Manager DB;
+    CustomAdapter ad;
+
+    SearchView searchView;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -34,22 +30,23 @@ public class RecylerViewClass extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_recyler_view);
 
-        MainActivity main=new MainActivity();
+        MainActivity main = new MainActivity();
+        searchView=findViewById(R.id.searchView);
 
-        recyclerView=findViewById(R.id.recyclerView);
-        DB=new DB_Manager(this,"InventoryDetails.db",null,2);
-        id=new ArrayList<>();
-        name=new ArrayList<>();
-        category=new ArrayList<>();
-        size=new ArrayList<>();
-        quantity=new ArrayList<>();
-        price=new ArrayList<>();
-        img_uri=new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerView);
+        DB = new DB_Manager(this, "InventoryDetails.db", null, 2);
+        id = new ArrayList<>();
+        name = new ArrayList<>();
+        category = new ArrayList<>();
+        size = new ArrayList<>();
+        quantity = new ArrayList<>();
+        price = new ArrayList<>();
+        img_uri = new ArrayList<>();
 
-        noItemFound=findViewById(R.id.noItemFound);
+        noItemFound = findViewById(R.id.noItemFound);
 
         // Object of Custom Adapter to Show the Details
-        ad=new CustomAdapter(RecylerViewClass.this,id, name, quantity, category, size, price, img_uri);
+        ad = new CustomAdapter(RecylerViewClass.this, id, name, quantity, category, size, price, img_uri );
         recyclerView.setAdapter(ad);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -58,19 +55,40 @@ public class RecylerViewClass extends AppCompatActivity {
 
         if (categoryFilter != null && categoryFilter.equals("pant")) {
             displayPant();
-        }else if(categoryFilter != null && categoryFilter.equals("shoe")){
+        } else if (categoryFilter != null && categoryFilter.equals("shoe")) {
             displayShoe();
         } else if (categoryFilter != null && categoryFilter.equals("shirt")) {
             displayShirt();
         }
+        // Object of Custom Adapter to Show the Details
+        ad = new CustomAdapter(RecylerViewClass.this, id, name, quantity, category, size, price, img_uri );
+        recyclerView.setAdapter(ad);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setupSearchView();
     }
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false; // Not used for instant search
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Call the filter method from the CustomAdapter
+                ad.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
+
     //Method of Displaying Pants
-    private void displayPant(){
-        Cursor cursor= DB.getPants();
-        if(cursor.getCount()==0){
+    private void displayPant() {
+        Cursor cursor = DB.getPants();
+        if (cursor.getCount() == 0) {
             noItemFound.setImageResource(R.drawable.empty2);
-        }else{
-            while(cursor.moveToNext()){
+        } else {
+            while (cursor.moveToNext()) {
                 noItemFound.setVisibility(RecyclerView.GONE);
                 id.add(cursor.getString(0));
                 name.add(cursor.getString(1));
@@ -83,13 +101,14 @@ public class RecylerViewClass extends AppCompatActivity {
             cursor.close();
         }
     }
+
     //Method of Displaying Shoes
-    private void displayShoe(){
-        Cursor cursor= DB.getShoe();
-        if(cursor.getCount()==0){
+    private void displayShoe() {
+        Cursor cursor = DB.getShoe();
+        if (cursor.getCount() == 0) {
             noItemFound.setImageResource(R.drawable.empty2);
-        }else{
-            while(cursor.moveToNext()){
+        } else {
+            while (cursor.moveToNext()) {
                 noItemFound.setVisibility(RecyclerView.GONE);
                 id.add(cursor.getString(0));
                 name.add(cursor.getString(1));
@@ -104,12 +123,12 @@ public class RecylerViewClass extends AppCompatActivity {
     }
 
     //Method of Displaying Shirts
-    private void displayShirt(){
-        Cursor cursor= DB.getShirts();
-        if(cursor.getCount()==0){
+    private void displayShirt() {
+        Cursor cursor = DB.getShirts();
+        if (cursor.getCount() == 0) {
             noItemFound.setImageResource(R.drawable.empty2);
-        }else{
-            while(cursor.moveToNext()){
+        } else {
+            while (cursor.moveToNext()) {
                 noItemFound.setVisibility(RecyclerView.GONE);
                 id.add(cursor.getString(0));
                 name.add(cursor.getString(1));
@@ -120,6 +139,8 @@ public class RecylerViewClass extends AppCompatActivity {
                 img_uri.add(cursor.getString(6));
             }
             cursor.close();
+
         }
     }
-}
+
+    }
