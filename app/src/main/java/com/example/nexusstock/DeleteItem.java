@@ -16,7 +16,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class DeleteItem extends AppCompatActivity {
-
     EditText delete_text;
     Button delete;
     DB_Manager db;
